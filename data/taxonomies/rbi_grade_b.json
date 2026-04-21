@@ -1,0 +1,219 @@
+{
+  "exam_name": "RBI Grade B",
+  "phases": ["Phase 1", "Phase 2"],
+  "marks_per_question": 1,
+  "negative_marking": 0.25,
+  "total_time_minutes": 120,
+  "sections": [
+    {
+      "name": "Quantitative Aptitude",
+      "typical_question_count": 30,
+      "topics": [
+        {
+          "name": "Data Interpretation",
+          "sub_topics": ["Bar Chart DI", "Table DI", "Line Graph DI", "Pie Chart DI", "Caselet DI", "Mixed DI", "Radar/Web DI"],
+          "keywords": ["bar chart", "bar graph", "table", "line graph", "pie chart", "caselet", "data", "ratio", "percentage change", "given below", "study the following", "following table", "following graph", "following chart", "what is the total", "what is the average", "what is the ratio", "what is the difference", "what percent", "approximate", "find the value"],
+          "description": "Questions based on data sets presented as charts, tables, or text-based caselets"
+        },
+        {
+          "name": "Number Series",
+          "sub_topics": ["Missing Number", "Wrong Number"],
+          "keywords": ["series", "next number", "wrong number", "missing number", "what should come in place", "find the wrong", "find the missing"],
+          "description": "Find the pattern and identify the missing or wrong number in a series"
+        },
+        {
+          "name": "Simplification & Approximation",
+          "sub_topics": ["Simplification", "Approximation"],
+          "keywords": ["simplify", "approximate", "what is the value", "=?", "= ?", "find the value of"],
+          "description": "Calculate the value of mathematical expressions"
+        },
+        {
+          "name": "Quadratic Equations",
+          "sub_topics": ["Single Variable", "Two Variable Comparison"],
+          "keywords": ["quadratic", "x²", "y²", "x2", "y2", "equation", "relation between x and y", "find the relation"],
+          "description": "Solve quadratic equations and compare roots"
+        },
+        {
+          "name": "Arithmetic Word Problems",
+          "sub_topics": ["Profit & Loss", "Simple & Compound Interest", "Time & Work", "Time Speed & Distance", "Percentage", "Ratio & Proportion", "Average", "Ages", "Mixture & Alligation", "Partnership", "Probability", "Permutation & Combination", "Mensuration", "Boats & Streams", "Pipes & Cisterns", "Trains"],
+          "keywords": ["profit", "loss", "cost price", "selling price", "interest", "principal", "rate", "time", "work", "speed", "distance", "train", "percentage", "ratio", "proportion", "average", "age", "mixture", "alligation", "partner", "probability", "permutation", "combination", "area", "volume", "boat", "stream", "pipe", "cistern", "upstream", "downstream"],
+          "description": "Word problems covering various arithmetic concepts"
+        },
+        {
+          "name": "Data Sufficiency",
+          "sub_topics": ["Statement Sufficiency"],
+          "keywords": ["data sufficiency", "statement I", "statement II", "sufficient", "which of the statements", "is sufficient to answer"],
+          "description": "Determine if given statements provide enough data to answer a question"
+        },
+        {
+          "name": "Quantity Comparison",
+          "sub_topics": ["Quantity I vs Quantity II"],
+          "keywords": ["quantity I", "quantity II", "quantity 1", "quantity 2", "compare", "which is greater", "relation between quantity"],
+          "description": "Compare two given quantities and determine their relationship"
+        }
+      ]
+    },
+    {
+      "name": "Reasoning",
+      "typical_question_count": 30,
+      "topics": [
+        {
+          "name": "Seating Arrangement",
+          "sub_topics": ["Circular Seating", "Linear Seating (Single Row)", "Linear Seating (Double Row)", "Rectangular/Square Seating"],
+          "keywords": ["sitting", "seating", "facing", "circular", "around a table", "row", "left", "right", "opposite", "adjacent", "neighbour", "faces the center", "faces outward", "sits", "seated"],
+          "description": "Arrangement of people in circular, linear, or other formations"
+        },
+        {
+          "name": "Puzzles",
+          "sub_topics": ["Floor/Building Puzzle", "Scheduling Puzzle", "Box Puzzle", "Comparison Puzzle", "Multi-parameter Puzzle"],
+          "keywords": ["floor", "lives on", "above", "below", "different floors", "box", "schedule", "day", "month", "assign", "belongs to"],
+          "description": "Logic puzzles involving arrangement of items/people with multiple conditions"
+        },
+        {
+          "name": "Syllogism",
+          "sub_topics": ["Basic Syllogism", "Reverse Syllogism", "Coded Syllogism"],
+          "keywords": ["all", "some", "no", "conclusion", "follows", "syllogism", "statement", "only a few", "at least some"],
+          "description": "Logical deduction from given statements to check validity of conclusions"
+        },
+        {
+          "name": "Coding-Decoding",
+          "sub_topics": ["Letter Coding", "Number Coding", "Symbol Coding", "Sentence Coding"],
+          "keywords": ["coded as", "code", "coding", "decoding", "coded", "what is the code for"],
+          "description": "Determine the logic behind encoding and decode given values"
+        },
+        {
+          "name": "Blood Relations",
+          "sub_topics": ["Direct Blood Relation", "Coded Blood Relation", "Puzzle-based Blood Relation"],
+          "keywords": ["father", "mother", "brother", "sister", "son", "daughter", "wife", "husband", "uncle", "aunt", "nephew", "niece", "grandfather", "grandmother", "related", "family"],
+          "description": "Determine family relationships from given information"
+        },
+        {
+          "name": "Inequality",
+          "sub_topics": ["Direct Inequality", "Coded Inequality"],
+          "keywords": ["greater", "less", "equal", ">=", "<=", ">", "<", "=", "inequality", "which of the following is true", "definitely true"],
+          "description": "Determine validity of conclusions based on inequality expressions"
+        },
+        {
+          "name": "Order & Ranking",
+          "sub_topics": ["Linear Ranking", "Comparison Ranking"],
+          "keywords": ["rank", "position", "from top", "from bottom", "from left", "from right", "taller", "shorter", "heavier", "lighter", "order"],
+          "description": "Determine position or rank of elements based on given conditions"
+        },
+        {
+          "name": "Direction Sense",
+          "sub_topics": ["Basic Direction", "Shadow-based Direction"],
+          "keywords": ["north", "south", "east", "west", "direction", "left turn", "right turn", "shadow", "sunrise", "sunset", "facing"],
+          "description": "Determine direction or distance based on movement descriptions"
+        },
+        {
+          "name": "Input-Output",
+          "sub_topics": ["Word/Number Rearrangement"],
+          "keywords": ["input", "output", "step I", "step II", "step 1", "step 2", "machine", "rearrangement"],
+          "description": "Determine the pattern of rearrangement across steps of a machine"
+        },
+        {
+          "name": "Alphanumeric Series",
+          "sub_topics": ["Letter Series", "Mixed Alphanumeric"],
+          "keywords": ["alphabet", "letter", "alphanumeric", "series", "what comes next"],
+          "description": "Pattern recognition in series involving letters, numbers, or both"
+        },
+        {
+          "name": "Logical Reasoning",
+          "sub_topics": ["Statement & Assumption", "Statement & Conclusion", "Cause & Effect", "Course of Action", "Strong/Weak Arguments"],
+          "keywords": ["assumption", "valid argument", "course of action", "cause", "effect", "strong argument", "weak argument"],
+          "description": "Higher-order reasoning questions testing logical analysis"
+        },
+        {
+          "name": "Data Sufficiency (Reasoning)",
+          "sub_topics": ["Reasoning Data Sufficiency"],
+          "keywords": ["data sufficiency", "which statement is sufficient"],
+          "description": "Determine if given statements are sufficient to answer a reasoning question"
+        }
+      ]
+    },
+    {
+      "name": "English Language",
+      "typical_question_count": 30,
+      "topics": [
+        {
+          "name": "Reading Comprehension",
+          "sub_topics": ["Main Idea", "Inference", "Vocabulary in Context", "Author's Tone", "Detail Questions"],
+          "keywords": ["passage", "according to the passage", "author", "what does the passage", "read the following passage", "which of the following is true", "tone of the passage", "title of the passage"],
+          "description": "Questions based on a given passage testing comprehension skills"
+        },
+        {
+          "name": "Cloze Test",
+          "sub_topics": ["Fill in the Blanks (Passage)"],
+          "keywords": ["fill in the blank", "cloze", "blank", "given below is a passage", "choose the correct word"],
+          "description": "Fill in blanks in a passage with appropriate words"
+        },
+        {
+          "name": "Error Detection/Correction",
+          "sub_topics": ["Sentence Error", "Paragraph Error"],
+          "keywords": ["error", "no error", "find the error", "grammatically correct", "which part of the sentence has an error", "correct the sentence"],
+          "description": "Identify grammatical or contextual errors in sentences"
+        },
+        {
+          "name": "Para Jumbles",
+          "sub_topics": ["Sentence Rearrangement"],
+          "keywords": ["rearrange", "para jumble", "correct order", "sequence", "which sentence should come first"],
+          "description": "Rearrange jumbled sentences to form a coherent paragraph"
+        },
+        {
+          "name": "Sentence Completion",
+          "sub_topics": ["Single Blank", "Double Blank"],
+          "keywords": ["blank", "fill", "most appropriate word", "suitable word"],
+          "description": "Choose the best word(s) to complete a sentence"
+        },
+        {
+          "name": "Vocabulary",
+          "sub_topics": ["Synonyms", "Antonyms", "Idioms & Phrases", "One Word Substitution"],
+          "keywords": ["synonym", "antonym", "meaning", "similar meaning", "opposite meaning", "idiom", "phrase means"],
+          "description": "Test of word meanings and vocabulary"
+        },
+        {
+          "name": "Sentence Improvement",
+          "sub_topics": ["Replace Phrase", "Correct Usage"],
+          "keywords": ["improve", "replace", "bold part", "underlined part", "which of the following should replace"],
+          "description": "Improve or correct parts of a given sentence"
+        },
+        {
+          "name": "Column-based Matching",
+          "sub_topics": ["Match Columns", "Sentence Connectors"],
+          "keywords": ["column", "match", "connector", "combine"],
+          "description": "Match parts from different columns to form meaningful sentences"
+        }
+      ]
+    },
+    {
+      "name": "General Awareness",
+      "typical_question_count": 30,
+      "topics": [
+        {
+          "name": "Banking & Financial Awareness",
+          "sub_topics": ["RBI Policy", "Banking Regulations", "Financial Terms", "Banking Schemes", "NPA & Bad Loans", "Digital Banking", "Payment Systems"],
+          "keywords": ["RBI", "repo rate", "NBFC", "NPA", "SLR", "CRR", "monetary policy", "bank", "financial", "UPI", "NEFT", "RTGS", "digital payment"],
+          "description": "Questions on banking sector, RBI policies, financial products"
+        },
+        {
+          "name": "Current Affairs",
+          "sub_topics": ["National", "International", "Appointments", "Awards", "Sports", "Summits & Conferences", "Books & Authors", "Committees"],
+          "keywords": ["appointed as", "awarded", "summit", "conference", "headquarters", "launched", "announced", "signed", "agreement", "committee"],
+          "description": "Recent events in India and the world"
+        },
+        {
+          "name": "Economy",
+          "sub_topics": ["Union Budget", "Economic Survey", "GDP", "Inflation", "Fiscal Policy", "Trade & External Sector", "Government Schemes"],
+          "keywords": ["budget", "GDP", "inflation", "fiscal", "deficit", "economy", "trade", "import", "export", "FDI", "scheme", "economic survey"],
+          "description": "Indian and global economic concepts and data"
+        },
+        {
+          "name": "Static GK",
+          "sub_topics": ["Indian Polity", "Geography", "History", "Science", "Countries & Capitals", "Important Days"],
+          "keywords": ["capital", "country", "constitution", "article", "amendment", "river", "mountain", "boundary", "state", "important day"],
+          "description": "Static general knowledge facts"
+        }
+      ]
+    }
+  ]
+}

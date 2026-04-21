@@ -1,0 +1,183 @@
+{
+  "exam_name": "SEBI Grade A",
+  "phases": ["Paper 1", "Paper 2"],
+  "marks_per_question": 1,
+  "negative_marking": 0.25,
+  "total_time_minutes": 120,
+  "sections": [
+    {
+      "name": "Quantitative Aptitude",
+      "typical_question_count": 25,
+      "topics": [
+        {
+          "name": "Data Interpretation",
+          "sub_topics": ["Bar Chart DI", "Table DI", "Line Graph DI", "Pie Chart DI", "Caselet DI", "Mixed DI"],
+          "keywords": ["bar chart", "table", "line graph", "pie chart", "caselet", "data", "percentage change", "following table", "following graph"],
+          "description": "Data-based questions with charts, tables, caselets"
+        },
+        {
+          "name": "Number Series",
+          "sub_topics": ["Missing Number", "Wrong Number"],
+          "keywords": ["series", "next number", "wrong number", "missing number"],
+          "description": "Find missing/wrong number in series"
+        },
+        {
+          "name": "Simplification & Approximation",
+          "sub_topics": ["Simplification", "Approximation"],
+          "keywords": ["simplify", "approximate", "what is the value", "=?"],
+          "description": "Evaluate mathematical expressions"
+        },
+        {
+          "name": "Quadratic Equations",
+          "sub_topics": ["Two Variable Comparison"],
+          "keywords": ["quadratic", "x²", "y²", "equation", "relation between"],
+          "description": "Solve and compare roots of quadratic equations"
+        },
+        {
+          "name": "Arithmetic Word Problems",
+          "sub_topics": ["Profit & Loss", "SI & CI", "Time & Work", "Time Speed & Distance", "Percentage", "Ratio & Proportion", "Average", "Ages", "Mixture & Alligation", "Probability", "Permutation & Combination", "Mensuration"],
+          "keywords": ["profit", "loss", "interest", "principal", "time", "work", "speed", "distance", "percentage", "ratio", "average", "age", "mixture", "probability", "area", "volume"],
+          "description": "Word problems on arithmetic concepts"
+        },
+        {
+          "name": "Data Sufficiency",
+          "sub_topics": ["Statement Sufficiency"],
+          "keywords": ["data sufficiency", "statement I", "statement II", "sufficient"],
+          "description": "Determine sufficiency of given statements"
+        }
+      ]
+    },
+    {
+      "name": "Reasoning",
+      "typical_question_count": 25,
+      "topics": [
+        {
+          "name": "Seating Arrangement",
+          "sub_topics": ["Circular Seating", "Linear Seating", "Rectangular Seating"],
+          "keywords": ["sitting", "seating", "facing", "circular", "row", "left", "right", "opposite"],
+          "description": "Seating arrangement puzzles"
+        },
+        {
+          "name": "Puzzles",
+          "sub_topics": ["Floor Puzzle", "Scheduling Puzzle", "Box Puzzle", "Multi-parameter Puzzle"],
+          "keywords": ["floor", "lives on", "above", "below", "box", "schedule", "day", "month"],
+          "description": "Logic puzzles with multiple conditions"
+        },
+        {
+          "name": "Syllogism",
+          "sub_topics": ["Basic Syllogism", "Reverse Syllogism"],
+          "keywords": ["all", "some", "no", "conclusion", "follows", "syllogism"],
+          "description": "Logical deduction from statements"
+        },
+        {
+          "name": "Coding-Decoding",
+          "sub_topics": ["Letter Coding", "Number Coding", "Symbol Coding"],
+          "keywords": ["coded as", "code", "coding", "decoding"],
+          "description": "Encoding/decoding logic"
+        },
+        {
+          "name": "Blood Relations",
+          "sub_topics": ["Direct", "Coded", "Puzzle-based"],
+          "keywords": ["father", "mother", "brother", "sister", "son", "daughter", "wife", "husband", "related"],
+          "description": "Family relationship puzzles"
+        },
+        {
+          "name": "Inequality",
+          "sub_topics": ["Direct Inequality", "Coded Inequality"],
+          "keywords": ["greater", "less", "equal", "inequality", "definitely true"],
+          "description": "Inequality-based logical reasoning"
+        },
+        {
+          "name": "Order & Ranking",
+          "sub_topics": ["Linear Ranking"],
+          "keywords": ["rank", "position", "from top", "from bottom", "taller", "shorter"],
+          "description": "Position/rank determination"
+        },
+        {
+          "name": "Direction Sense",
+          "sub_topics": ["Basic Direction"],
+          "keywords": ["north", "south", "east", "west", "direction"],
+          "description": "Direction-based reasoning"
+        },
+        {
+          "name": "Input-Output",
+          "sub_topics": ["Rearrangement"],
+          "keywords": ["input", "output", "step", "machine"],
+          "description": "Machine input-output pattern recognition"
+        },
+        {
+          "name": "Logical Reasoning",
+          "sub_topics": ["Statement & Assumption", "Statement & Conclusion", "Cause & Effect", "Course of Action"],
+          "keywords": ["assumption", "course of action", "cause", "effect", "strong argument"],
+          "description": "Analytical reasoning questions"
+        }
+      ]
+    },
+    {
+      "name": "English Language",
+      "typical_question_count": 25,
+      "topics": [
+        {
+          "name": "Reading Comprehension",
+          "sub_topics": ["Main Idea", "Inference", "Vocabulary in Context", "Tone"],
+          "keywords": ["passage", "according to the passage", "author", "tone"],
+          "description": "Passage-based comprehension"
+        },
+        {
+          "name": "Cloze Test",
+          "sub_topics": ["Fill in the Blanks"],
+          "keywords": ["fill in the blank", "cloze", "blank"],
+          "description": "Passage blanks filling"
+        },
+        {
+          "name": "Error Detection",
+          "sub_topics": ["Sentence Error"],
+          "keywords": ["error", "no error", "grammatically correct"],
+          "description": "Grammar error identification"
+        },
+        {
+          "name": "Para Jumbles",
+          "sub_topics": ["Sentence Rearrangement"],
+          "keywords": ["rearrange", "para jumble", "correct order"],
+          "description": "Sentence ordering"
+        },
+        {
+          "name": "Vocabulary",
+          "sub_topics": ["Synonyms", "Antonyms", "Idioms"],
+          "keywords": ["synonym", "antonym", "meaning", "idiom"],
+          "description": "Word meaning and usage"
+        }
+      ]
+    },
+    {
+      "name": "General Awareness",
+      "typical_question_count": 25,
+      "topics": [
+        {
+          "name": "Capital Markets & Securities",
+          "sub_topics": ["SEBI Regulations", "Stock Market", "Mutual Funds", "IPO/FPO", "Derivatives", "Corporate Governance"],
+          "keywords": ["SEBI", "stock", "share", "mutual fund", "IPO", "FPO", "derivative", "bond", "debenture", "securities", "listing", "corporate governance"],
+          "description": "Capital market knowledge specific to SEBI"
+        },
+        {
+          "name": "Banking & Financial Awareness",
+          "sub_topics": ["RBI Policy", "Banking Terms", "Financial Institutions"],
+          "keywords": ["RBI", "bank", "financial", "NBFC", "NPA"],
+          "description": "Banking sector awareness"
+        },
+        {
+          "name": "Current Affairs",
+          "sub_topics": ["National", "International", "Appointments", "Awards"],
+          "keywords": ["appointed", "awarded", "summit", "launched", "agreement"],
+          "description": "Recent events"
+        },
+        {
+          "name": "Economy",
+          "sub_topics": ["Budget", "GDP", "Fiscal Policy", "Trade"],
+          "keywords": ["budget", "GDP", "inflation", "fiscal", "economy", "trade"],
+          "description": "Economic concepts and data"
+        }
+      ]
+    }
+  ]
+}

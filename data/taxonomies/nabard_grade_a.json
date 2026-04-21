@@ -1,0 +1,177 @@
+{
+  "exam_name": "NABARD Grade A",
+  "phases": ["Prelims", "Mains"],
+  "marks_per_question": 1,
+  "negative_marking": 0.25,
+  "total_time_minutes": 120,
+  "sections": [
+    {
+      "name": "Quantitative Aptitude",
+      "typical_question_count": 20,
+      "topics": [
+        {
+          "name": "Data Interpretation",
+          "sub_topics": ["Bar Chart DI", "Table DI", "Line Graph DI", "Pie Chart DI", "Caselet DI"],
+          "keywords": ["bar chart", "table", "line graph", "pie chart", "caselet", "data", "percentage change"],
+          "description": "Data-based questions"
+        },
+        {
+          "name": "Number Series",
+          "sub_topics": ["Missing Number", "Wrong Number"],
+          "keywords": ["series", "next number", "wrong number", "missing number"],
+          "description": "Number pattern recognition"
+        },
+        {
+          "name": "Simplification & Approximation",
+          "sub_topics": ["Simplification", "Approximation"],
+          "keywords": ["simplify", "approximate", "value", "=?"],
+          "description": "Mathematical simplification"
+        },
+        {
+          "name": "Quadratic Equations",
+          "sub_topics": ["Two Variable Comparison"],
+          "keywords": ["quadratic", "x²", "y²", "equation"],
+          "description": "Quadratic equation solving"
+        },
+        {
+          "name": "Arithmetic Word Problems",
+          "sub_topics": ["Profit & Loss", "SI & CI", "Time & Work", "Time Speed & Distance", "Percentage", "Ratio & Proportion", "Average", "Ages", "Mixture", "Probability", "Mensuration"],
+          "keywords": ["profit", "loss", "interest", "time", "work", "speed", "distance", "percentage", "ratio", "average", "age", "mixture", "probability", "area", "volume"],
+          "description": "Arithmetic word problems"
+        }
+      ]
+    },
+    {
+      "name": "Reasoning",
+      "typical_question_count": 20,
+      "topics": [
+        {
+          "name": "Seating Arrangement",
+          "sub_topics": ["Circular Seating", "Linear Seating"],
+          "keywords": ["sitting", "seating", "facing", "circular", "row", "left", "right"],
+          "description": "Seating arrangement puzzles"
+        },
+        {
+          "name": "Puzzles",
+          "sub_topics": ["Floor Puzzle", "Scheduling Puzzle", "Box Puzzle"],
+          "keywords": ["floor", "lives on", "above", "below", "box", "schedule"],
+          "description": "Logic puzzles"
+        },
+        {
+          "name": "Syllogism",
+          "sub_topics": ["Basic Syllogism"],
+          "keywords": ["all", "some", "no", "conclusion", "follows"],
+          "description": "Syllogistic reasoning"
+        },
+        {
+          "name": "Coding-Decoding",
+          "sub_topics": ["Letter Coding", "Number Coding"],
+          "keywords": ["coded as", "code", "coding"],
+          "description": "Code logic"
+        },
+        {
+          "name": "Blood Relations",
+          "sub_topics": ["Direct", "Coded"],
+          "keywords": ["father", "mother", "brother", "sister", "son", "daughter", "related"],
+          "description": "Family relationships"
+        },
+        {
+          "name": "Inequality",
+          "sub_topics": ["Direct Inequality"],
+          "keywords": ["greater", "less", "equal", "inequality"],
+          "description": "Inequality reasoning"
+        },
+        {
+          "name": "Direction Sense",
+          "sub_topics": ["Basic Direction"],
+          "keywords": ["north", "south", "east", "west", "direction"],
+          "description": "Direction reasoning"
+        },
+        {
+          "name": "Logical Reasoning",
+          "sub_topics": ["Statement & Assumption", "Cause & Effect", "Course of Action"],
+          "keywords": ["assumption", "cause", "effect", "course of action"],
+          "description": "Analytical reasoning"
+        }
+      ]
+    },
+    {
+      "name": "English Language",
+      "typical_question_count": 20,
+      "topics": [
+        {
+          "name": "Reading Comprehension",
+          "sub_topics": ["Main Idea", "Inference", "Vocabulary"],
+          "keywords": ["passage", "according to the passage", "author"],
+          "description": "Passage comprehension"
+        },
+        {
+          "name": "Cloze Test",
+          "sub_topics": ["Fill in the Blanks"],
+          "keywords": ["fill in the blank", "cloze", "blank"],
+          "description": "Passage blanks"
+        },
+        {
+          "name": "Error Detection",
+          "sub_topics": ["Sentence Error"],
+          "keywords": ["error", "no error", "grammatically correct"],
+          "description": "Error finding"
+        },
+        {
+          "name": "Para Jumbles",
+          "sub_topics": ["Sentence Rearrangement"],
+          "keywords": ["rearrange", "correct order"],
+          "description": "Sentence ordering"
+        },
+        {
+          "name": "Vocabulary",
+          "sub_topics": ["Synonyms", "Antonyms"],
+          "keywords": ["synonym", "antonym", "meaning"],
+          "description": "Word knowledge"
+        }
+      ]
+    },
+    {
+      "name": "General Awareness",
+      "typical_question_count": 20,
+      "topics": [
+        {
+          "name": "Agriculture & Rural Development",
+          "sub_topics": ["Agricultural Policy", "Crop Production", "Rural Schemes", "NABARD Functions", "Cooperative Banking", "Microfinance", "SHG", "Kisan Credit Card"],
+          "keywords": ["agriculture", "crop", "farmer", "rural", "NABARD", "cooperative", "microfinance", "SHG", "self help", "kisan", "irrigation", "MSP", "minimum support price", "food security"],
+          "description": "Agriculture and rural development topics specific to NABARD"
+        },
+        {
+          "name": "Banking & Financial Awareness",
+          "sub_topics": ["RBI Policy", "Banking Terms", "Financial Inclusion"],
+          "keywords": ["RBI", "bank", "financial", "NBFC"],
+          "description": "Banking sector knowledge"
+        },
+        {
+          "name": "Current Affairs",
+          "sub_topics": ["National", "International", "Appointments", "Awards"],
+          "keywords": ["appointed", "awarded", "summit", "launched"],
+          "description": "Current events"
+        },
+        {
+          "name": "Economy",
+          "sub_topics": ["Budget", "GDP", "Inflation", "Fiscal Policy"],
+          "keywords": ["budget", "GDP", "inflation", "fiscal", "economy"],
+          "description": "Economic awareness"
+        }
+      ]
+    },
+    {
+      "name": "Computer Knowledge",
+      "typical_question_count": 20,
+      "topics": [
+        {
+          "name": "Computer Fundamentals",
+          "sub_topics": ["Hardware", "Software", "Operating Systems", "Networking", "Internet", "Database", "Security"],
+          "keywords": ["computer", "hardware", "software", "operating system", "RAM", "ROM", "CPU", "network", "internet", "database", "SQL", "firewall", "virus", "encryption"],
+          "description": "Basic computer knowledge"
+        }
+      ]
+    }
+  ]
+}
