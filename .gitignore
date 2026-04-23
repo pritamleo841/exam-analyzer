@@ -25,8 +25,5 @@ Thumbs.db
 test_output.txt
 *.log
 
-# Documents (PDFs too large for git)
-documents/**/*.pdf
-
 # Streamlit
 .streamlit/secrets.toml
