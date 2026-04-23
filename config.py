@@ -150,3 +150,53 @@ SECTION_OPTIONS = {
         "Phase 2": ["Section 1", "Section 2"],
     },
 }
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# CA PREDICTOR SETTINGS
+# ═════════════════════════════════════════════════════════════════════════════
+
+# Persistent storage location
+STORAGE_BASE_PATH = r"C:\exam_analyzer_data"
+
+# Documents folder (in-repo folder for PDFs)
+import os as _os
+DOCUMENTS_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "documents")
+CA_DOCUMENTS_DIR = _os.path.join(DOCUMENTS_DIR, "current_affairs")
+PYQ_DOCUMENTS_DIR = _os.path.join(DOCUMENTS_DIR, "previous_year_papers")
+
+# Months available for CA upload
+CA_MONTHS = ["January", "February", "March", "April", "May", "June",
+             "July", "August", "September", "October", "November", "December"]
+
+# CA categories used for prediction/sectioning
+CA_SECTIONS = [
+    "Union Budget",
+    "Economic Survey",
+    "RBI & Monetary Policy",
+    "Banking & Finance",
+    "Reports & Indices",
+    "Government Schemes",
+    "International Organizations & Summits",
+    "Financial Markets & Regulations",
+    "Social Issues & Development",
+    "Appointments & Awards",
+    "Agriculture & Rural Economy",
+    "External Sector & Trade",
+    "Insurance & Pension",
+    "Science & Technology",
+    "Environment & Sustainability",
+    "Defence & Security",
+    "Sports & Events",
+    "General",
+]
+
+# Prediction weights
+PREDICTION_WEIGHTS = {
+    "pyq_frequency": 0.40,   # How often this category appeared in past exams
+    "ai_importance": 0.35,   # AI-assessed importance of the fact
+    "recency": 0.25,         # More recent = more likely to appear
+}
+
+# Expected CA questions in RBI Grade B Phase 1 GA section
+EXPECTED_CA_QUESTIONS_PHASE1 = 30

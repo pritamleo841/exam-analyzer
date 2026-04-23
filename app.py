@@ -41,9 +41,28 @@ from data.rbi_grade_b import (
     get_esi_topics, get_fm_topics, get_phase2_mcqs, get_all_phase2_mcq_count,
     get_last30_plan, get_topper_tips, get_quant_shortcuts,
 )
-from generators.ca_question_generator import generate_ca_questions_from_pdfs
+from generators.ca_question_generator import generate_ca_questions_from_pdfs, extract_facts_from_pdfs
 from generators.question_generator import generate_mock_test_questions
 from exporters.mock_test_export import export_mock_test_pdf
+from analyzers.ca_pattern_analyzer import (
+    analyze_pyq_paper, aggregate_pyq_patterns, get_category_weights,
+    load_ca_taxonomy, classify_question_to_ca_category,
+)
+from analyzers.ca_predictor import run_predictive_analysis
+from exporters.ca_html_report import export_ca_predictions_html
+from storage.local_store import (
+    init_storage, save_ca_extracted, load_all_ca_extracted,
+    save_pyq_pattern, load_all_pyq_patterns, delete_pyq_pattern,
+    save_analysis_results, load_analysis_results,
+    save_report, load_upload_manifest, save_upload_record,
+    save_full_state, load_full_state, get_storage_summary,
+    delete_ca_extracted,
+)
+from config import CA_MONTHS, CA_SECTIONS, CA_DOCUMENTS_DIR, PYQ_DOCUMENTS_DIR
+from deployer.github_pages import init_site_repo, deploy_site, get_site_status
+from exporters.ca_site_builder import build_github_pages_site
+from utils.document_scanner import scan_ca_folder, scan_pyq_folder, get_scan_summary
+from utils.batch_processor import batch_process_ca, batch_process_pyq
 
 # ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -137,10 +156,33 @@ _defaults = {
     "quiz_answered": {},
     "ca_generated_mcqs": [],
     "mock_test_questions": [],
+    # CA Predictor state
+    "ca_pred_facts": [],
+    "ca_pred_questions": [],
+    "ca_pred_analysis": None,
+    "ca_pred_pyq_patterns": [],
+    "ca_pred_html": None,
+    "ca_pred_loaded": False,
 }
 for k, v in _defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
+
+# Auto-load persisted data from C: drive on first run
+if not st.session_state.ca_pred_loaded:
+    init_storage()
+    _saved = load_full_state()
+    if _saved:
+        for _k in ["ca_pred_facts", "ca_pred_questions", "ca_pred_pyq_patterns"]:
+            if _k in _saved:
+                st.session_state[_k] = _saved[_k]
+    _saved_analysis = load_analysis_results()
+    if _saved_analysis:
+        st.session_state.ca_pred_analysis = _saved_analysis
+    _saved_pyqs = load_all_pyq_patterns()
+    if _saved_pyqs:
+        st.session_state.ca_pred_pyq_patterns = _saved_pyqs
+    st.session_state.ca_pred_loaded = True
 
 
 def load_taxonomy(exam_type: str) -> dict:
@@ -303,15 +345,15 @@ with st.sidebar:
 # TABS — add RBI Grade B tab when that exam is selected
 # ═════════════════════════════════════════════════════════════════════════════
 if exam_type == "RBI Grade B":
-    tab_home, tab_rbi, tab_upload, tab_dashboard, tab_ca, tab_quiz, tab_predictions, tab_mock, tab_study, tab_export = st.tabs([
+    tab_home, tab_rbi, tab_upload, tab_dashboard, tab_ca, tab_ca_pred, tab_quiz, tab_predictions, tab_mock, tab_study, tab_export = st.tabs([
         "🏠 Home", "🏦 RBI Grade B", "📁 Upload", "📈 Dashboard", "📰 Current Affairs",
-        "❓ Quiz", "🔮 Predictions", "📝 Mock Test", "📖 Study Plan", "💾 Export",
+        "🔮 CA Predictor", "❓ Quiz", "📊 Predictions", "📝 Mock Test", "📖 Study Plan", "💾 Export",
     ])
 else:
     tab_rbi = None
-    tab_home, tab_upload, tab_dashboard, tab_ca, tab_quiz, tab_predictions, tab_mock, tab_study, tab_export = st.tabs([
+    tab_home, tab_upload, tab_dashboard, tab_ca, tab_ca_pred, tab_quiz, tab_predictions, tab_mock, tab_study, tab_export = st.tabs([
         "🏠 Home", "📁 Upload", "📈 Dashboard", "📰 Current Affairs",
-        "❓ Quiz", "🔮 Predictions", "📝 Mock Test", "📖 Study Plan", "💾 Export",
+        "🔮 CA Predictor", "❓ Quiz", "📊 Predictions", "📝 Mock Test", "📖 Study Plan", "💾 Export",
     ])
 
 
@@ -989,6 +1031,700 @@ with tab_ca:
                 st.session_state.ca_generated_mcqs = []
                 st.rerun()
 
+
+# ═════════════════════════════════════════════════════════════════════════════
+# TAB: CA PREDICTOR
+# ═════════════════════════════════════════════════════════════════════════════
+with tab_ca_pred:
+    st.markdown("### 🔮 Current Affairs Predictive Analyzer")
+    st.caption(
+        "Upload monthly CA PDFs (Jan–Jun 2026) + previous year CA papers → "
+        "AI predicts high-probability questions for RBI Grade B 2026. "
+        "All data is saved to C:\\\\exam_analyzer_data and persists across sessions."
+    )
+
+    # Storage summary
+    storage_info = get_storage_summary()
+    sci1, sci2, sci3, sci4 = st.columns(4)
+    with sci1:
+        st.metric("📅 CA Months Uploaded", storage_info["ca_months_uploaded"])
+    with sci2:
+        st.metric("📚 PYQ Years Uploaded", storage_info["pyq_years_uploaded"])
+    with sci3:
+        st.metric("📊 Reports Generated", storage_info["reports_generated"])
+    with sci4:
+        st.metric("💾 Analysis Saved", "Yes" if storage_info["has_analysis"] else "No")
+
+    ca_pred_tab1, ca_pred_tab2, ca_pred_tab3, ca_pred_tab4, ca_pred_tab5 = st.tabs([
+        "📄 Upload CA PDFs", "📚 Upload PYQ Papers", "🔬 Run Analysis", "📊 View Report", "🚀 GitHub Pages"
+    ])
+
+    # ── Sub-tab 1: Upload Monthly CA PDFs ────────────────────────────────
+    with ca_pred_tab1:
+        st.markdown("#### 📄 Upload Monthly Current Affairs PDFs (Jan–Jun 2026)")
+        st.markdown(
+            '<div class="tip-box">'
+            '<strong>📌 Tip:</strong> Upload one PDF per month. '
+            'The AI will extract all exam-relevant facts, tag importance, and generate MCQs. '
+            'Each upload is saved to C: drive so you won\'t lose progress.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+        ca_pred_month = st.selectbox(
+            "Select month:", CA_MONTHS[:6],  # Jan-Jun
+            key="ca_pred_month",
+            help="Which month does this CA compilation cover?",
+        )
+        ca_pred_year = st.number_input("Year:", 2025, 2026, 2026, key="ca_pred_year")
+
+        ca_pred_file = st.file_uploader(
+            f"Upload CA PDF for {ca_pred_month} {ca_pred_year}",
+            type=["pdf"],
+            key="ca_pred_upload",
+        )
+
+        can_upload_ca = (
+            ca_pred_file
+            and method != CategorizationMethod.RULE_BASED.value
+            and (api_key or method == CategorizationMethod.OLLAMA.value)
+        )
+
+        if not ca_pred_file:
+            pass
+        elif method == CategorizationMethod.RULE_BASED.value or (not api_key and method != CategorizationMethod.OLLAMA.value):
+            st.warning("⚠️ AI provider required. Configure OpenAI / Gemini / Ollama in the sidebar.")
+
+        if st.button("📤 Upload & Analyze", type="primary", use_container_width=True,
+                     disabled=not can_upload_ca, key="ca_pred_upload_btn"):
+            ai_cat = AICategorizer(load_taxonomy(exam_type), _get_provider(method), api_key, model_name)
+            progress = st.progress(0, text=f"Processing {ca_pred_month} CA PDF...")
+
+            pdf_list = [(ca_pred_file.name, ca_pred_file.read())]
+            month_map = {ca_pred_file.name: ca_pred_month}
+
+            def _ca_progress(cur, tot, msg):
+                progress.progress(min((cur + 1) / max(tot + 1, 1), 0.99), text=msg)
+
+            result = extract_facts_from_pdfs(
+                pdf_files=pdf_list,
+                ai_caller=ai_cat._call_ai,
+                month_map=month_map,
+                exam_name=exam_type,
+                progress_callback=_ca_progress,
+            )
+
+            # Save to persistent storage
+            save_ca_extracted(ca_pred_month, ca_pred_year, {
+                "facts": result["facts"],
+                "questions": result["questions"],
+                "source_file": ca_pred_file.name,
+            })
+            save_upload_record(ca_pred_file.name, ca_pred_month, ca_pred_year, "ca_monthly")
+
+            # Update session state
+            # Reload all from storage for consistency
+            all_extracted = load_all_ca_extracted()
+            all_facts = []
+            all_qs = []
+            for ext in all_extracted:
+                all_facts.extend(ext.get("facts", []))
+                all_qs.extend(ext.get("questions", []))
+            st.session_state.ca_pred_facts = all_facts
+            st.session_state.ca_pred_questions = all_qs
+
+            # Persist
+            save_full_state({
+                "ca_pred_facts": all_facts,
+                "ca_pred_questions": all_qs,
+                "ca_pred_pyq_patterns": st.session_state.ca_pred_pyq_patterns,
+            })
+
+            progress.progress(1.0, text="Done!")
+            st.success(f"✅ Extracted {len(result['facts'])} facts and {len(result['questions'])} MCQs from {ca_pred_month}")
+            st.rerun()
+
+        # Show existing uploaded months
+        manifest = load_upload_manifest()
+        ca_uploads = [m for m in manifest if m.get("type") == "ca_monthly"]
+        if ca_uploads:
+            st.markdown("---")
+            st.markdown("**📅 Uploaded CA PDFs:**")
+            for u in ca_uploads:
+                st.markdown(f"✅ **{u['month']} {u.get('year', '')}** — {u['filename']} (uploaded {u.get('uploaded_at', '')[:10]})")
+
+        # Total facts/questions in memory
+        if st.session_state.ca_pred_facts:
+            st.markdown("---")
+            fc1, fc2 = st.columns(2)
+            with fc1:
+                st.metric("Total Facts Extracted", len(st.session_state.ca_pred_facts))
+            with fc2:
+                st.metric("Total MCQs Generated", len(st.session_state.ca_pred_questions))
+
+            # Category breakdown
+            cat_counts = {}
+            for f in st.session_state.ca_pred_facts:
+                cat = f.get("category", "General")
+                cat_counts[cat] = cat_counts.get(cat, 0) + 1
+            st.markdown("**Category breakdown of extracted facts:**")
+            cat_cols = st.columns(min(len(cat_counts), 4))
+            for ci, (cat, count) in enumerate(sorted(cat_counts.items(), key=lambda x: x[1], reverse=True)):
+                with cat_cols[ci % len(cat_cols)]:
+                    st.metric(cat[:25], count)
+
+        # ── Folder Scan: Auto-detect CA PDFs ─────────────────────────────
+        st.markdown("---")
+        with st.expander("📂 Scan Documents Folder", expanded=False):
+            st.caption(f"Looking in: `{CA_DOCUMENTS_DIR}`")
+            st.markdown(
+                "Drop CA PDFs into `documents/current_affairs/` with names like "
+                "`january_2026.pdf`, `feb_2026.pdf`, etc. The app auto-detects the month."
+            )
+
+            ca_scan = scan_ca_folder()
+            if not ca_scan:
+                st.info("No PDF files found in documents/current_affairs/. Drop your CA PDFs there.")
+            else:
+                new_ca = [f for f in ca_scan if f["status"] == "new"]
+                done_ca = [f for f in ca_scan if f["status"] == "processed"]
+
+                if done_ca:
+                    st.markdown(f"**✅ Already processed ({len(done_ca)}):**")
+                    for f in done_ca:
+                        st.markdown(f"- ✅ `{f['filename']}` → {f['month']} {f['year']} (processed {f['uploaded_at'][:10]})")
+
+                if new_ca:
+                    st.markdown(f"**🆕 New files detected ({len(new_ca)}):**")
+                    for f in new_ca:
+                        month_label = f["month"] if f["month"] else "⚠️ Unknown month"
+                        st.markdown(f"- 🆕 `{f['filename']}` → {month_label} {f['year']}")
+
+                    no_month = [f for f in new_ca if not f["month"]]
+                    if no_month:
+                        st.warning(f"{len(no_month)} file(s) have unrecognized month names. Rename them to include the month (e.g. january_2026.pdf).")
+
+                    processable = [f for f in new_ca if f["month"]]
+                    if processable:
+                        can_batch = (
+                            method != CategorizationMethod.RULE_BASED.value
+                            and (api_key or method == CategorizationMethod.OLLAMA.value)
+                        )
+                        if not can_batch:
+                            st.warning("⚠️ Configure an AI provider in the sidebar to batch-process.")
+
+                        if st.button(
+                            f"🚀 Process All {len(processable)} New CA PDFs",
+                            type="primary", use_container_width=True,
+                            disabled=not can_batch, key="batch_ca_btn",
+                        ):
+                            ai_cat = AICategorizer(load_taxonomy(exam_type), _get_provider(method), api_key, model_name)
+                            progress = st.progress(0, text="Batch processing CA PDFs...")
+
+                            def _batch_ca_progress(cur, tot, msg):
+                                progress.progress(min((cur + 1) / max(tot, 1), 0.99), text=msg)
+
+                            batch_result = batch_process_ca(
+                                new_files=processable,
+                                ai_caller=ai_cat._call_ai,
+                                exam_name=exam_type,
+                                progress_callback=_batch_ca_progress,
+                            )
+
+                            # Reload all from storage
+                            all_extracted = load_all_ca_extracted()
+                            all_facts, all_qs = [], []
+                            for ext in all_extracted:
+                                all_facts.extend(ext.get("facts", []))
+                                all_qs.extend(ext.get("questions", []))
+                            st.session_state.ca_pred_facts = all_facts
+                            st.session_state.ca_pred_questions = all_qs
+                            save_full_state({
+                                "ca_pred_facts": all_facts,
+                                "ca_pred_questions": all_qs,
+                                "ca_pred_pyq_patterns": st.session_state.ca_pred_pyq_patterns,
+                            })
+
+                            progress.progress(1.0, text="Done!")
+                            st.success(
+                                f"✅ Batch complete: {batch_result['processed']} PDFs processed, "
+                                f"{batch_result['total_facts']} facts, {batch_result['total_questions']} MCQs"
+                            )
+                            if batch_result["errors"]:
+                                for err in batch_result["errors"]:
+                                    st.warning(f"⚠️ {err}")
+                            st.rerun()
+                else:
+                    st.success("All files in the folder have been processed!")
+
+    # ── Sub-tab 2: Upload Previous Year CA Papers ────────────────────────
+    with ca_pred_tab2:
+        st.markdown("#### 📚 Upload Previous Year Question Papers (Current Affairs)")
+        st.markdown(
+            '<div class="tip-box">'
+            '<strong>📌 Why?</strong> By analyzing which CA topics RBI asked in past exams, '
+            'the AI learns the pattern — which categories get more questions, what difficulty, '
+            'which topics repeat. This dramatically improves prediction accuracy.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+        pyq_col1, pyq_col2 = st.columns(2)
+        with pyq_col1:
+            pyq_year = st.selectbox("Year of paper:", list(range(2025, 2018, -1)), key="pyq_ca_year")
+        with pyq_col2:
+            pyq_type = st.selectbox("Paper type:", ["Phase 1 (GA Section)", "Full Paper"], key="pyq_type")
+
+        pyq_file = st.file_uploader(
+            f"Upload {pyq_year} paper (PDF or text)",
+            type=["pdf", "txt", "csv"],
+            key="pyq_ca_upload",
+        )
+
+        can_upload_pyq = (
+            pyq_file
+            and method != CategorizationMethod.RULE_BASED.value
+            and (api_key or method == CategorizationMethod.OLLAMA.value)
+        )
+
+        if pyq_file and (method == CategorizationMethod.RULE_BASED.value or (not api_key and method != CategorizationMethod.OLLAMA.value)):
+            st.warning("⚠️ AI provider recommended for accurate pattern extraction. Rule-based fallback will be less accurate.")
+            can_upload_pyq = bool(pyq_file)  # Allow rule-based as fallback
+
+        if st.button("📤 Upload & Extract Patterns", type="primary", use_container_width=True,
+                     disabled=not pyq_file, key="pyq_upload_btn"):
+            progress = st.progress(0, text=f"Processing {pyq_year} PYQ paper...")
+
+            # Extract text and split into questions
+            fb = pyq_file.read()
+            if pyq_file.name.lower().endswith(".pdf"):
+                text = extract_text_from_pdf(fb)
+                qs = split_into_questions(text, pyq_year, "Phase 1", exam_type)
+            elif pyq_file.name.lower().endswith(".csv"):
+                qs = parse_csv_input(fb, pyq_year, "Phase 1", exam_type)
+            else:
+                qs = parse_text_input(fb.decode("utf-8", errors="replace"), pyq_year, "Phase 1", exam_type)
+
+            progress.progress(0.3, text=f"Extracted {len(qs)} questions. Classifying into CA categories...")
+
+            # Convert to dicts for pattern analyzer
+            q_dicts = [{"text": q.text, "question_number": q.question_number} for q in qs]
+
+            # Use AI or rule-based classification
+            ai_caller = None
+            if method != CategorizationMethod.RULE_BASED.value and (api_key or method == CategorizationMethod.OLLAMA.value):
+                ai_cat = AICategorizer(load_taxonomy(exam_type), _get_provider(method), api_key, model_name)
+                ai_caller = ai_cat._call_ai
+
+            pattern = analyze_pyq_paper(q_dicts, ai_caller=ai_caller)
+            pattern["year"] = pyq_year
+            pattern["source_file"] = pyq_file.name
+
+            # Save to persistent storage
+            save_pyq_pattern(pyq_year, pattern)
+            save_upload_record(pyq_file.name, "", pyq_year, "pyq_ca")
+
+            # Reload all patterns
+            all_patterns = load_all_pyq_patterns()
+            st.session_state.ca_pred_pyq_patterns = all_patterns
+
+            # Persist
+            save_full_state({
+                "ca_pred_facts": st.session_state.ca_pred_facts,
+                "ca_pred_questions": st.session_state.ca_pred_questions,
+                "ca_pred_pyq_patterns": all_patterns,
+            })
+
+            progress.progress(1.0, text="Done!")
+            st.success(f"✅ Extracted pattern from {pyq_year}: {pattern['total_questions']} questions across {len(pattern['categories'])} categories")
+            st.rerun()
+
+        # Show existing PYQ patterns
+        if st.session_state.ca_pred_pyq_patterns:
+            st.markdown("---")
+            st.markdown("**📚 Uploaded PYQ Patterns:**")
+
+            for p in st.session_state.ca_pred_pyq_patterns:
+                yr = p.get("_year", p.get("year", "?"))
+                total = p.get("total_questions", 0)
+                cats = p.get("categories", {})
+                with st.expander(f"Year {yr} — {total} questions, {len(cats)} categories", expanded=False):
+                    for cat, info in sorted(cats.items(), key=lambda x: x[1].get("count", 0), reverse=True):
+                        st.markdown(f"- **{cat}**: {info['count']} Qs ({info['percentage']}%)")
+
+            # Show aggregated pattern
+            agg = aggregate_pyq_patterns(st.session_state.ca_pred_pyq_patterns)
+            if agg.get("categories"):
+                st.markdown("---")
+                st.markdown("**📊 Aggregated Pattern (All Years):**")
+                st.markdown(f"*{agg['years_analyzed']} year(s) analyzed, avg {agg['avg_total_questions']} questions/year*")
+
+                import pandas as pd
+                agg_data = []
+                for cat, info in sorted(agg["categories"].items(), key=lambda x: x[1]["avg_count"], reverse=True):
+                    agg_data.append({
+                        "Category": cat,
+                        "Avg Qs/Year": info["avg_count"],
+                        "Avg %": info["avg_percentage"],
+                        "Consistency": f"{info['consistency']}%",
+                        "Trend": info["trend"],
+                    })
+                st.dataframe(pd.DataFrame(agg_data), use_container_width=True, hide_index=True)
+
+        # ── Folder Scan: Auto-detect PYQ Papers ──────────────────────────
+        st.markdown("---")
+        with st.expander("📂 Scan Documents Folder", expanded=False):
+            st.caption(f"Looking in: `{PYQ_DOCUMENTS_DIR}`")
+            st.markdown(
+                "Drop PYQ papers into `documents/previous_year_papers/` with names like "
+                "`rbi_grade_b_2024.pdf`, `pyq_2023.pdf`, etc. The app auto-detects the year."
+            )
+
+            pyq_scan = scan_pyq_folder()
+            if not pyq_scan:
+                st.info("No files found in documents/previous_year_papers/. Drop your PYQ papers there.")
+            else:
+                new_pyq = [f for f in pyq_scan if f["status"] == "new"]
+                done_pyq = [f for f in pyq_scan if f["status"] == "processed"]
+
+                if done_pyq:
+                    st.markdown(f"**✅ Already processed ({len(done_pyq)}):**")
+                    for f in done_pyq:
+                        st.markdown(f"- ✅ `{f['filename']}` → Year {f['year']} (processed {f['uploaded_at'][:10]})")
+
+                if new_pyq:
+                    st.markdown(f"**🆕 New files detected ({len(new_pyq)}):**")
+                    for f in new_pyq:
+                        year_label = str(f["year"]) if f["year"] else "⚠️ Unknown year"
+                        st.markdown(f"- 🆕 `{f['filename']}` → Year {year_label}")
+
+                    no_year = [f for f in new_pyq if f["year"] == 0]
+                    if no_year:
+                        st.warning(f"{len(no_year)} file(s) have unrecognized year. Rename them to include the year (e.g. rbi_2024.pdf).")
+
+                    processable = [f for f in new_pyq if f["year"] != 0]
+                    if processable:
+                        ai_caller_pyq = None
+                        if method != CategorizationMethod.RULE_BASED.value and (api_key or method == CategorizationMethod.OLLAMA.value):
+                            ai_cat_pyq = AICategorizer(load_taxonomy(exam_type), _get_provider(method), api_key, model_name)
+                            ai_caller_pyq = ai_cat_pyq._call_ai
+
+                        if st.button(
+                            f"🚀 Process All {len(processable)} New PYQ Papers",
+                            type="primary", use_container_width=True,
+                            key="batch_pyq_btn",
+                        ):
+                            progress = st.progress(0, text="Batch processing PYQ papers...")
+
+                            def _batch_pyq_progress(cur, tot, msg):
+                                progress.progress(min((cur + 1) / max(tot, 1), 0.99), text=msg)
+
+                            batch_result = batch_process_pyq(
+                                new_files=processable,
+                                ai_caller=ai_caller_pyq,
+                                exam_name=exam_type,
+                                progress_callback=_batch_pyq_progress,
+                            )
+
+                            # Reload all patterns
+                            all_patterns = load_all_pyq_patterns()
+                            st.session_state.ca_pred_pyq_patterns = all_patterns
+                            save_full_state({
+                                "ca_pred_facts": st.session_state.ca_pred_facts,
+                                "ca_pred_questions": st.session_state.ca_pred_questions,
+                                "ca_pred_pyq_patterns": all_patterns,
+                            })
+
+                            progress.progress(1.0, text="Done!")
+                            st.success(
+                                f"✅ Batch complete: {batch_result['processed']} papers processed, "
+                                f"{batch_result['total_questions']} questions analyzed"
+                            )
+                            if batch_result["errors"]:
+                                for err in batch_result["errors"]:
+                                    st.warning(f"⚠️ {err}")
+                            st.rerun()
+                else:
+                    st.success("All PYQ papers in the folder have been processed!")
+
+    # ── Sub-tab 3: Run Predictive Analysis ───────────────────────────────
+    with ca_pred_tab3:
+        st.markdown("#### 🔬 Run Predictive Analysis")
+
+        has_facts = len(st.session_state.ca_pred_facts) > 0
+        has_pyqs = len(st.session_state.ca_pred_pyq_patterns) > 0
+
+        if not has_facts:
+            st.markdown(
+                '<div class="tip-box">'
+                '<strong>📄 Step 1:</strong> Upload monthly CA PDFs in the "Upload CA PDFs" tab first. '
+                'The more months you upload, the better the predictions.'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.success(f"✅ {len(st.session_state.ca_pred_facts)} facts and {len(st.session_state.ca_pred_questions)} MCQs ready for analysis")
+
+        if not has_pyqs:
+            st.info("💡 Upload previous year papers in the 'Upload PYQ Papers' tab for pattern-based predictions. Without PYQs, the analysis uses default importance weights.")
+        else:
+            st.success(f"✅ {len(st.session_state.ca_pred_pyq_patterns)} PYQ year(s) loaded for pattern matching")
+
+        if has_facts:
+            st.markdown("---")
+            target_qs = st.slider(
+                "Expected CA questions in exam:",
+                10, 50, 30,
+                key="ca_pred_target",
+                help="How many current affairs questions do you expect in Phase 1 GA?",
+            )
+
+            if st.button("🚀 Run Predictive Analysis", type="primary", use_container_width=True, key="ca_pred_run"):
+                with st.spinner("Running AI-powered predictive analysis..."):
+                    analysis = run_predictive_analysis(
+                        all_facts=st.session_state.ca_pred_facts,
+                        all_questions=st.session_state.ca_pred_questions,
+                        pyq_patterns=st.session_state.ca_pred_pyq_patterns if has_pyqs else None,
+                        target_questions=target_qs,
+                    )
+
+                    st.session_state.ca_pred_analysis = analysis
+                    save_analysis_results(analysis)
+
+                    # Generate HTML report
+                    html_report = export_ca_predictions_html(analysis, exam_name=exam_type)
+                    st.session_state.ca_pred_html = html_report
+                    report_path = save_report(html_report)
+
+                    st.success(f"✅ Analysis complete! Report saved to {report_path}")
+                    st.rerun()
+
+        # Show quick summary if analysis exists
+        if st.session_state.ca_pred_analysis:
+            analysis = st.session_state.ca_pred_analysis
+            st.markdown("---")
+            st.markdown("### 📊 Analysis Summary")
+
+            readiness = analysis.get("readiness_score", 0)
+            r_color = "green" if readiness >= 70 else "orange" if readiness >= 40 else "red"
+            st.markdown(f"**Readiness Score:** :{r_color}[{readiness}%]")
+
+            asum1, asum2, asum3 = st.columns(3)
+            with asum1:
+                st.metric("Facts Analyzed", analysis.get("total_facts", 0))
+            with asum2:
+                st.metric("MCQs Available", analysis.get("total_questions", 0))
+            with asum3:
+                st.metric("Sections Covered", len([s for s in analysis.get("sections", []) if s["fact_count"] > 0]))
+
+            # Top 10 must-study facts
+            st.markdown("#### 🔥 Top 10 Must-Study Facts")
+            for i, f in enumerate(analysis.get("top_50_facts", [])[:10], 1):
+                prob = f.get("probability_score", 0)
+                imp = f.get("importance", "Medium")
+                imp_icon = {"High": "🔴", "Medium": "🟡", "Low": "🟢"}.get(imp, "⚪")
+                cat = f.get("category", "")
+                st.markdown(
+                    f"**{i}.** {imp_icon} [{prob}%] **{cat}** — {f.get('fact', '')}"
+                )
+
+            # Section predictions table
+            st.markdown("#### 📋 Section-wise Predictions")
+            sec_data = []
+            for s in analysis.get("sections", []):
+                if s["predicted_questions"] > 0 or s["fact_count"] > 0:
+                    sec_data.append({
+                        "Section": s["name"],
+                        "Priority": s["study_priority"],
+                        "Expected Qs": s["predicted_questions"],
+                        "Facts": s["fact_count"],
+                        "MCQs": s["question_count"],
+                        "Coverage": s["coverage_status"],
+                    })
+            if sec_data:
+                st.dataframe(pd.DataFrame(sec_data), use_container_width=True, hide_index=True)
+
+    # ── Sub-tab 4: View & Download Report ────────────────────────────────
+    with ca_pred_tab4:
+        st.markdown("#### 📊 View & Download Predictions Report")
+
+        if st.session_state.ca_pred_html:
+            st.success("✅ Report is ready!")
+
+            st.download_button(
+                "📥 Download HTML Report",
+                data=st.session_state.ca_pred_html,
+                file_name=f"{exam_type.replace(' ', '_')}_CA_Predictions_2026.html",
+                mime="text/html",
+                use_container_width=True,
+                type="primary",
+            )
+
+            st.markdown("---")
+            st.markdown("**Preview (scroll within the frame):**")
+            import streamlit.components.v1 as components
+            components.html(st.session_state.ca_pred_html, height=700, scrolling=True)
+
+        elif st.session_state.ca_pred_analysis:
+            st.info("Analysis exists but no report generated yet. Go to 'Run Analysis' tab and click 'Run Predictive Analysis'.")
+        else:
+            st.markdown(
+                '<div class="tip-box">'
+                '<strong>📊 No report yet.</strong> Follow these steps:<br>'
+                '1️⃣ Upload CA PDFs (Jan–Jun) in "Upload CA PDFs" tab<br>'
+                '2️⃣ (Optional) Upload PYQ papers in "Upload PYQ Papers" tab<br>'
+                '3️⃣ Run analysis in "Run Analysis" tab<br>'
+                '4️⃣ Come back here to view and download the report'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+
+        # Also offer JSON download of analysis data
+        if st.session_state.ca_pred_analysis:
+            st.markdown("---")
+            st.download_button(
+                "📥 Download Raw Analysis Data (JSON)",
+                data=json.dumps(st.session_state.ca_pred_analysis, indent=2, ensure_ascii=False, default=str),
+                file_name=f"{exam_type.replace(' ', '_')}_CA_Analysis_2026.json",
+                mime="application/json",
+                use_container_width=True,
+            )
+
+        # Data management
+        if st.session_state.ca_pred_facts or st.session_state.ca_pred_pyq_patterns:
+            st.markdown("---")
+            with st.expander("🗑️ Data Management", expanded=False):
+                st.caption(f"Storage path: {storage_info['storage_path']}")
+                if st.button("🗑️ Clear All CA Predictor Data", key="ca_pred_clear_all"):
+                    st.session_state.ca_pred_facts = []
+                    st.session_state.ca_pred_questions = []
+                    st.session_state.ca_pred_analysis = None
+                    st.session_state.ca_pred_pyq_patterns = []
+                    st.session_state.ca_pred_html = None
+                    save_full_state({
+                        "ca_pred_facts": [],
+                        "ca_pred_questions": [],
+                        "ca_pred_pyq_patterns": [],
+                    })
+                    st.rerun()
+
+
+    # ── Sub-tab 5: GitHub Pages Deployment ───────────────────────────────────
+    with ca_pred_tab5:
+        st.markdown("#### 🚀 Deploy to GitHub Pages")
+        st.caption(
+            "Push your CA predictions to a GitHub Pages site for easy access from any device. "
+            "Navigate, search, filter and revise — all in one place."
+        )
+
+        # Check git availability
+        import shutil
+        git_available = shutil.which("git") is not None
+
+        if not git_available:
+            st.error("❌ Git is not installed or not in PATH. Please install Git first.")
+        else:
+            st.success("✅ Git is available")
+
+            # Repository setup
+            st.markdown("##### 1️⃣ Repository Setup")
+            st.info(
+                "**First time?** Create a new empty repo on GitHub (e.g. `rbi-ca-predictions`), "
+                "then paste the URL below. Make sure you have git credentials configured "
+                "(SSH key or credential manager)."
+            )
+
+            site_status = get_site_status()
+
+            repo_url = st.text_input(
+                "GitHub Repository URL:",
+                value=site_status.get("remote_url", ""),
+                placeholder="https://github.com/username/rbi-ca-predictions.git",
+                key="gh_repo_url",
+            )
+
+            if repo_url:
+                if st.button("🔗 Initialize / Connect Repository", key="gh_init"):
+                    with st.spinner("Setting up repository..."):
+                        try:
+                            result = init_site_repo(repo_url)
+                            st.success(result)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Failed to initialize: {e}")
+
+            # Status display
+            if site_status["initialized"]:
+                st.markdown("---")
+                st.markdown("##### 📡 Site Status")
+                sc1, sc2 = st.columns(2)
+                with sc1:
+                    st.markdown(f"**Remote:** `{site_status['remote_url']}`")
+                    st.markdown(f"**Last commit:** {site_status['last_commit']}")
+                with sc2:
+                    st.markdown(f"**Local dir:** `{site_status['site_dir']}`")
+                    if site_status["pages_url"]:
+                        st.markdown(f"**🌐 Live site:** [{site_status['pages_url']}]({site_status['pages_url']})")
+
+                # Deploy section
+                st.markdown("---")
+                st.markdown("##### 2️⃣ Deploy")
+
+                if st.session_state.ca_pred_analysis:
+                    analysis = st.session_state.ca_pred_analysis
+                    facts_n = analysis.get("total_facts", 0)
+                    qs_n = analysis.get("total_questions", 0)
+                    secs_n = len([s for s in analysis.get("sections", []) if s["fact_count"] > 0])
+
+                    st.markdown(f"**Ready to deploy:** {facts_n} facts, {qs_n} MCQs across {secs_n} sections")
+
+                    custom_msg = st.text_input(
+                        "Commit message (optional):",
+                        placeholder="Auto-generated if empty",
+                        key="gh_commit_msg",
+                    )
+
+                    col_deploy, col_preview = st.columns(2)
+                    with col_deploy:
+                        if st.button("🚀 Deploy to GitHub Pages", type="primary", use_container_width=True, key="gh_deploy"):
+                            with st.spinner("Building site and pushing to GitHub Pages..."):
+                                try:
+                                    result = deploy_site(
+                                        analysis=analysis,
+                                        exam_name=exam_type,
+                                        commit_msg=custom_msg if custom_msg else "",
+                                    )
+                                    if "Error" in result or "failed" in result.lower():
+                                        st.warning(result)
+                                    else:
+                                        st.success(result)
+                                        updated_status = get_site_status()
+                                        if updated_status["pages_url"]:
+                                            st.markdown(f"### 🌐 [Visit your site →]({updated_status['pages_url']})")
+                                            st.info("Note: GitHub Pages may take 1-2 minutes to update after the first deploy. Enable GitHub Pages from your repo Settings → Pages → Branch: gh-pages.")
+                                except Exception as e:
+                                    st.error(f"Deployment failed: {e}")
+
+                    with col_preview:
+                        if st.button("👁️ Preview Site Locally", use_container_width=True, key="gh_preview"):
+                            with st.spinner("Building preview..."):
+                                preview_html = build_github_pages_site(analysis, exam_name=exam_type)
+                                st.session_state["gh_preview_html"] = preview_html
+                                st.success("Preview ready! Scroll down.")
+
+                    if st.session_state.get("gh_preview_html"):
+                        st.markdown("---")
+                        st.markdown("**Site Preview:**")
+                        import streamlit.components.v1 as components
+                        components.html(st.session_state["gh_preview_html"], height=700, scrolling=True)
+
+                else:
+                    st.warning(
+                        "⚠️ No analysis data available. Run the predictive analysis first "
+                        "(go to '🔬 Run Analysis' tab)."
+                    )
+            elif repo_url:
+                st.info("👆 Click 'Initialize / Connect Repository' to set up the GitHub Pages site.")
 
 # ═════════════════════════════════════════════════════════════════════════════
 # TAB: QUIZ

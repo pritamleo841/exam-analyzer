@@ -303,3 +303,125 @@ FORMAT — respond with a valid JSON array. Each element:
 
 Respond with ONLY the JSON array, no markdown fences, no extra text.
 """
+
+
+def get_ca_fact_extraction_prompt(
+    ca_text: str,
+    exam_name: str = "RBI Grade B",
+    month: str = "",
+) -> str:
+    """Build a prompt to extract structured facts from CA content AND generate MCQs.
+
+    This is a more thorough extraction than get_ca_question_generation_prompt —
+    it also extracts the underlying facts with importance tags.
+    """
+    month_hint = f" for the month of {month}" if month else ""
+
+    return f"""You are an expert current affairs analyst specializing in Indian banking and regulatory exams, particularly {exam_name}.
+
+Below is an extract from a monthly current affairs compilation{month_hint}.
+
+CONTENT:
+\"\"\"
+{ca_text[:14000]}
+\"\"\"
+
+YOUR TASK — do TWO things:
+
+**PART A: Extract Key Facts**
+Extract every exam-relevant fact from the content. For each fact, provide:
+- The fact itself (1-2 sentences, precise with numbers/names/dates)
+- Category (from the list below)
+- Importance: "High" (very likely in exam — policy changes, major appointments, landmark numbers),
+  "Medium" (could appear — schemes, reports, indices), or "Low" (less likely but possible)
+- Why it matters for {exam_name} exam (1 sentence)
+
+**PART B: Generate MCQs**
+For every HIGH importance fact, generate 1-2 MCQs.
+For every MEDIUM importance fact, generate 1 MCQ.
+Skip LOW importance facts for MCQs.
+
+CATEGORIES (use exactly these names):
+Union Budget | Economic Survey | RBI & Monetary Policy | Banking & Finance |
+Reports & Indices | Government Schemes | International Organizations & Summits |
+Financial Markets & Regulations | Social Issues & Development | Appointments & Awards |
+Agriculture & Rural Economy | External Sector & Trade | Insurance & Pension |
+Science & Technology | Environment & Sustainability | Defence & Security |
+Sports & Events | General
+
+FORMAT — respond with a valid JSON object:
+{{
+  "facts": [
+    {{
+      "fact": "The RBI kept the repo rate unchanged at 6.50% in its April 2026 MPC meeting.",
+      "category": "RBI & Monetary Policy",
+      "importance": "High",
+      "why_it_matters": "RBI policy rates are asked in almost every banking exam."
+    }}
+  ],
+  "questions": [
+    {{
+      "question": "What is the current repo rate as of April 2026?",
+      "options": ["(a) 6.25%", "(b) 6.50%", "(c) 6.75%", "(d) 7.00%"],
+      "answer": 1,
+      "explanation": "The RBI MPC kept the repo rate unchanged at 6.50% in April 2026.",
+      "category": "RBI & Monetary Policy",
+      "importance": "High"
+    }}
+  ]
+}}
+
+RULES:
+1. Extract ALL exam-relevant facts, not just the obvious ones — aim for 15-30 facts per chunk.
+2. Questions must be answerable from the content. No guessing.
+3. Each question must have exactly 4 options. Only one correct.
+4. Plausible wrong options — close numbers, similar names, related organizations.
+5. Include variety: direct factual, fill-in-blank, which-is-correct-incorrect, match-pair.
+6. Focus on facts most likely to appear in {exam_name} Phase 1 General Awareness.
+
+Respond with ONLY the JSON object, no markdown fences.
+"""
+
+
+def get_ca_predictive_prompt(
+    facts_summary: str,
+    pyq_pattern_summary: str,
+    exam_name: str = "RBI Grade B",
+    target_questions: int = 30,
+) -> str:
+    """Build a prompt for AI to rank facts by exam appearance probability.
+
+    Uses both the current CA facts and historical PYQ patterns to predict
+    which topics are most likely to appear.
+    """
+    return f"""You are a senior exam prediction analyst for {exam_name} in India.
+You have deep knowledge of what topics RBI typically asks in Phase 1 General Awareness.
+
+TASK: Rank the following current affairs facts by their probability of appearing
+in the {exam_name} 2026 exam. The exam is expected to have ~{target_questions} current affairs questions.
+
+HISTORICAL PATTERN FROM PREVIOUS YEARS:
+{pyq_pattern_summary}
+
+CURRENT AFFAIRS FACTS TO RANK:
+{facts_summary}
+
+For each fact, assign a probability score (0-100) based on:
+1. Historical pattern match — does this category get questions historically?
+2. Significance — is this a landmark event, policy change, or first-of-its-kind?
+3. RBI relevance — directly related to banking/finance/economy?
+4. Recency — more recent facts are more likely to appear
+5. Uniqueness — one-time events vs routine updates
+
+FORMAT — respond with a JSON array sorted by probability (highest first):
+[
+  {{
+    "fact_id": 0,
+    "probability": 95,
+    "reasoning": "RBI policy rates asked every year. This is a key change."
+  }}
+]
+
+"fact_id" is the 0-based index of the fact in the list above.
+Respond with ONLY the JSON array.
+"""

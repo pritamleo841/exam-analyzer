@@ -1,0 +1,207 @@
+{
+  "exam_name": "RBI Grade B - Current Affairs",
+  "description": "Current Affairs taxonomy for RBI Grade B Phase 1 General Awareness section",
+  "expected_ca_questions": 30,
+  "sections": [
+    {
+      "name": "Union Budget",
+      "importance": "Very High",
+      "expected_questions": "3-5",
+      "keywords": ["budget", "fiscal deficit", "capital expenditure", "revenue expenditure", "allocation", "tax", "GST", "income tax", "customs duty", "excise", "disinvestment", "fiscal policy", "budget estimate", "revised estimate", "surcharge", "cess", "new tax regime", "old tax regime", "standard deduction", "TDS", "budget speech", "finance bill", "appropriation bill"],
+      "topics": [
+        {"name": "Fiscal Deficit & Revenue Targets", "keywords": ["fiscal deficit", "revenue deficit", "primary deficit", "effective revenue deficit", "FRBM"]},
+        {"name": "Tax Reforms & Proposals", "keywords": ["income tax slab", "GST", "customs duty", "surcharge", "TDS", "capital gains tax"]},
+        {"name": "Sectoral Allocations", "keywords": ["allocation", "outlay", "capital expenditure", "infrastructure", "health budget", "education budget", "defence budget"]},
+        {"name": "Key Schemes Announced", "keywords": ["scheme", "mission", "yojana", "programme", "fund", "initiative"]},
+        {"name": "Disinvestment & PSU", "keywords": ["disinvestment", "privatization", "PSU", "strategic sale", "IPO"]}
+      ]
+    },
+    {
+      "name": "Economic Survey",
+      "importance": "Very High",
+      "expected_questions": "3-5",
+      "keywords": ["economic survey", "GDP growth", "chief economic adviser", "economic outlook", "growth forecast", "inflation projection", "survey highlights", "economic review"],
+      "topics": [
+        {"name": "GDP & Growth Projections", "keywords": ["GDP", "growth rate", "real GDP", "nominal GDP", "GVA", "growth projection"]},
+        {"name": "Inflation Analysis", "keywords": ["inflation", "CPI", "WPI", "food inflation", "core inflation"]},
+        {"name": "Fiscal & External Sector", "keywords": ["current account deficit", "forex reserves", "trade deficit", "capital account", "FDI", "FPI"]},
+        {"name": "Employment & Labour", "keywords": ["employment", "unemployment", "labour force", "PLFS", "gig economy", "EPFO"]},
+        {"name": "Key Recommendations", "keywords": ["recommendation", "reform", "policy suggestion", "structural reform"]}
+      ]
+    },
+    {
+      "name": "RBI & Monetary Policy",
+      "importance": "Very High",
+      "expected_questions": "4-6",
+      "keywords": ["RBI", "repo rate", "reverse repo", "SLR", "CRR", "monetary policy", "MPC", "LAF", "MSF", "bank rate", "OMO", "LTRO", "TLTRO", "liquidity", "inflation targeting", "policy stance", "accommodative", "withdrawal", "neutral", "tightening"],
+      "topics": [
+        {"name": "Policy Rates & Stance", "keywords": ["repo rate", "reverse repo", "bank rate", "MSF", "SLR", "CRR", "policy stance"]},
+        {"name": "MPC Decisions", "keywords": ["MPC", "monetary policy committee", "bi-monthly", "consensus", "vote", "external member"]},
+        {"name": "RBI Regulations & Circulars", "keywords": ["circular", "master direction", "regulation", "guideline", "RBI order", "licence"]},
+        {"name": "RBI Governors & Deputies", "keywords": ["governor", "deputy governor", "appointment", "RBI board"]},
+        {"name": "Digital Currency & CBDC", "keywords": ["CBDC", "digital rupee", "e-rupee", "digital currency", "retail CBDC", "wholesale CBDC"]},
+        {"name": "Payment Systems", "keywords": ["UPI", "NEFT", "RTGS", "IMPS", "payment aggregator", "PPI", "digital payment"]}
+      ]
+    },
+    {
+      "name": "Banking & Finance",
+      "importance": "High",
+      "expected_questions": "3-5",
+      "keywords": ["bank", "NBFC", "NPA", "credit growth", "deposit", "merger", "acquisition", "fintech", "digital banking", "banking regulation", "PSB", "private bank", "small finance bank", "payment bank"],
+      "topics": [
+        {"name": "Bank Mergers & Restructuring", "keywords": ["merger", "amalgamation", "consolidation", "PSB"]},
+        {"name": "NPA & Asset Quality", "keywords": ["NPA", "gross NPA", "net NPA", "provision", "write-off", "IBC", "NCLT", "bad bank", "NARCL"]},
+        {"name": "Credit & Deposit Growth", "keywords": ["credit growth", "deposit growth", "CASA", "priority sector lending"]},
+        {"name": "New Banking Licences", "keywords": ["banking licence", "small finance bank", "payment bank", "universal bank", "on-tap licence"]},
+        {"name": "Financial Inclusion", "keywords": ["Jan Dhan", "financial inclusion", "BC model", "banking correspondent", "unbanked"]}
+      ]
+    },
+    {
+      "name": "Reports & Indices",
+      "importance": "High",
+      "expected_questions": "3-5",
+      "keywords": ["index", "report", "ranking", "survey", "World Bank", "IMF", "UNDP", "WEF", "HDI", "GDP ranking", "ease of doing business", "global competitiveness", "world happiness", "hunger index", "gender gap"],
+      "topics": [
+        {"name": "Global Indices & India's Rank", "keywords": ["HDI", "GHI", "gender gap", "happiness", "corruption perception", "democracy index", "peace index", "India rank"]},
+        {"name": "IMF & World Bank Reports", "keywords": ["WEO", "World Economic Outlook", "GEP", "Global Economic Prospects", "Article IV"]},
+        {"name": "RBI Annual Report & FSR", "keywords": ["RBI annual report", "financial stability report", "FSR", "trend and progress"]},
+        {"name": "Other Key Reports", "keywords": ["UNCTAD", "WTO", "ILO", "world trade report", "investment report", "SIPRI"]}
+      ]
+    },
+    {
+      "name": "Government Schemes",
+      "importance": "High",
+      "expected_questions": "2-4",
+      "keywords": ["scheme", "yojana", "mission", "programme", "abhiyan", "PM", "pradhan mantri", "national", "central", "ministry", "launch", "initiative"],
+      "topics": [
+        {"name": "Financial Inclusion Schemes", "keywords": ["Jan Dhan", "MUDRA", "Stand Up India", "Start Up India", "PMJJBY", "PMSBY", "APY"]},
+        {"name": "Social Welfare Schemes", "keywords": ["Ayushman Bharat", "PM-JAY", "PM Awas", "Ujjwala", "MGNREGA", "DBT", "ration"]},
+        {"name": "Agriculture Schemes", "keywords": ["PM-KISAN", "crop insurance", "PMFBY", "e-NAM", "MSP", "soil health card"]},
+        {"name": "Infrastructure & Digital Schemes", "keywords": ["Digital India", "Make in India", "Gati Shakti", "Smart Cities", "Bharatmala", "Sagarmala"]},
+        {"name": "New Schemes 2025-26", "keywords": ["new scheme", "launched in 2025", "launched in 2026", "budget announcement"]}
+      ]
+    },
+    {
+      "name": "International Organizations & Summits",
+      "importance": "Medium-High",
+      "expected_questions": "2-3",
+      "keywords": ["G20", "G7", "BRICS", "SCO", "ASEAN", "SAARC", "UN", "NATO", "QUAD", "summit", "conference", "COP", "WTO", "WHO", "UNESCO", "headquarters", "secretary general", "presidency", "chair"],
+      "topics": [
+        {"name": "G20 & G7", "keywords": ["G20", "G7", "presidency", "summit", "sherpa", "declaration"]},
+        {"name": "BRICS & SCO", "keywords": ["BRICS", "SCO", "NDB", "new member", "expansion"]},
+        {"name": "UN & Specialized Agencies", "keywords": ["UN", "UNGA", "UNSC", "UNESCO", "WHO", "UNICEF", "FAO", "ILO", "WIPO"]},
+        {"name": "Climate Summits", "keywords": ["COP", "climate", "Paris Agreement", "NDC", "net zero", "carbon"]},
+        {"name": "Trade Organizations", "keywords": ["WTO", "ministerial conference", "trade agreement", "FTA", "RCEP", "CEPA"]}
+      ]
+    },
+    {
+      "name": "Financial Markets & Regulations",
+      "importance": "Medium-High",
+      "expected_questions": "2-3",
+      "keywords": ["SEBI", "stock exchange", "BSE", "NSE", "Sensex", "Nifty", "IPO", "FPO", "mutual fund", "bond", "derivative", "IFSCA", "GIFT City", "sovereign bond", "T-bill", "G-Sec"],
+      "topics": [
+        {"name": "SEBI Regulations", "keywords": ["SEBI", "regulation", "circular", "disclosure", "listing", "insider trading"]},
+        {"name": "Capital Market Developments", "keywords": ["IPO", "FPO", "Sensex", "Nifty", "market cap", "DII", "FII"]},
+        {"name": "Bond & Debt Market", "keywords": ["G-Sec", "T-bill", "sovereign bond", "corporate bond", "yield", "bond index"]},
+        {"name": "IFSCA & GIFT City", "keywords": ["IFSCA", "GIFT City", "IFSC", "offshore", "global financial centre"]}
+      ]
+    },
+    {
+      "name": "Social Issues & Development",
+      "importance": "Medium",
+      "expected_questions": "1-3",
+      "keywords": ["census", "population", "poverty", "literacy", "HDI", "gender", "sanitation", "education", "health", "demographic", "nutrition", "child", "women empowerment", "reservation"],
+      "topics": [
+        {"name": "Poverty & Inequality", "keywords": ["poverty", "multidimensional poverty", "MPI", "inequality", "Gini coefficient"]},
+        {"name": "Health & Nutrition", "keywords": ["health", "malnutrition", "stunting", "wasting", "NHM", "NFHS", "immunization"]},
+        {"name": "Education", "keywords": ["NEP", "GER", "literacy", "ASER", "NIPUN", "NIRF ranking", "education"]},
+        {"name": "Census & Demographics", "keywords": ["census", "population", "fertility rate", "TFR", "demographic dividend", "urbanization"]}
+      ]
+    },
+    {
+      "name": "Appointments & Awards",
+      "importance": "Medium",
+      "expected_questions": "2-3",
+      "keywords": ["appointed", "nominated", "awarded", "prize", "Nobel", "Padma", "Bharat Ratna", "CEO", "chairman", "head", "president", "director", "governor", "chief"],
+      "topics": [
+        {"name": "Key Appointments India", "keywords": ["appointed", "chairman", "CEO", "MD", "governor", "chief justice", "election commissioner", "CAG"]},
+        {"name": "Key Appointments International", "keywords": ["UN secretary general", "IMF MD", "World Bank president", "WTO DG", "WHO DG"]},
+        {"name": "Awards & Honours", "keywords": ["Nobel", "Padma", "Bharat Ratna", "Booker", "Oscar", "Ramon Magsaysay", "Pulitzer", "Sahitya Akademi"]}
+      ]
+    },
+    {
+      "name": "Agriculture & Rural Economy",
+      "importance": "Medium",
+      "expected_questions": "1-2",
+      "keywords": ["agriculture", "kharif", "rabi", "MSP", "crop", "irrigation", "rural", "soil", "fertilizer", "agri export", "food processing", "dairy", "fishery", "farmer"],
+      "topics": [
+        {"name": "MSP & Crop Production", "keywords": ["MSP", "kharif", "rabi", "production", "procurement", "foodgrain"]},
+        {"name": "Agricultural Reforms", "keywords": ["agri reform", "APMC", "contract farming", "FPO", "agri-tech"]},
+        {"name": "Rural Development", "keywords": ["MGNREGA", "rural housing", "PM Gram Sadak", "rural employment", "SHG"]}
+      ]
+    },
+    {
+      "name": "External Sector & Trade",
+      "importance": "Medium",
+      "expected_questions": "1-2",
+      "keywords": ["export", "import", "trade deficit", "trade surplus", "FTA", "rupee", "dollar", "forex reserve", "current account", "capital account", "FDI", "FPI", "remittance", "balance of payment"],
+      "topics": [
+        {"name": "Trade Data & Agreements", "keywords": ["export", "import", "trade deficit", "FTA", "CEPA", "bilateral trade"]},
+        {"name": "Foreign Exchange", "keywords": ["forex reserve", "rupee", "exchange rate", "REER", "NEER", "forex management"]},
+        {"name": "FDI & FPI Flows", "keywords": ["FDI", "FPI", "foreign investment", "FDI inflow", "FII"]}
+      ]
+    },
+    {
+      "name": "Insurance & Pension",
+      "importance": "Medium",
+      "expected_questions": "1-2",
+      "keywords": ["insurance", "IRDAI", "LIC", "health insurance", "crop insurance", "pension", "NPS", "EPFO", "ESI", "actuary", "premium", "claim"],
+      "topics": [
+        {"name": "Insurance Regulations", "keywords": ["IRDAI", "insurance amendment", "FDI in insurance", "composite licence"]},
+        {"name": "Pension Developments", "keywords": ["NPS", "OPS", "UPS", "EPFO", "pension fund", "APY"]}
+      ]
+    },
+    {
+      "name": "Science & Technology",
+      "importance": "Low-Medium",
+      "expected_questions": "1-2",
+      "keywords": ["ISRO", "space", "satellite", "AI", "quantum", "5G", "6G", "semiconductor", "nuclear", "defence technology", "cybersecurity", "blockchain"],
+      "topics": [
+        {"name": "Space & ISRO", "keywords": ["ISRO", "Chandrayaan", "Gaganyaan", "Aditya", "satellite", "launch vehicle", "PSLV", "GSLV"]},
+        {"name": "Digital Technology", "keywords": ["AI", "artificial intelligence", "quantum computing", "5G", "6G", "semiconductor", "blockchain"]},
+        {"name": "Defence Technology", "keywords": ["DRDO", "missile", "INS", "HAL", "defence export", "Tejas", "BrahMos"]}
+      ]
+    },
+    {
+      "name": "Environment & Sustainability",
+      "importance": "Low-Medium",
+      "expected_questions": "1-2",
+      "keywords": ["climate", "carbon", "emission", "renewable", "solar", "wind", "EV", "biofuel", "green hydrogen", "forest", "biodiversity", "wetland", "Ramsar", "tiger reserve", "national park"],
+      "topics": [
+        {"name": "Climate & Emissions", "keywords": ["climate change", "net zero", "carbon credit", "NDC", "Paris Agreement", "emission"]},
+        {"name": "Renewable Energy", "keywords": ["solar", "wind", "green hydrogen", "EV", "biofuel", "renewable capacity"]},
+        {"name": "Biodiversity & Conservation", "keywords": ["Ramsar", "tiger reserve", "national park", "wildlife", "biodiversity", "mangrove"]}
+      ]
+    },
+    {
+      "name": "Defence & Security",
+      "importance": "Low-Medium",
+      "expected_questions": "0-1",
+      "keywords": ["defence", "army", "navy", "air force", "exercise", "missile", "border", "ceasefire", "terrorism", "NIA", "BSF", "CRPF"],
+      "topics": [
+        {"name": "Military Exercises", "keywords": ["exercise", "joint exercise", "bilateral", "multilateral", "naval exercise"]},
+        {"name": "Defence Acquisitions", "keywords": ["Rafale", "S-400", "defence deal", "Make in India defence", "indigenous"]}
+      ]
+    },
+    {
+      "name": "Sports & Events",
+      "importance": "Low",
+      "expected_questions": "0-1",
+      "keywords": ["Olympics", "Commonwealth Games", "Asian Games", "World Cup", "cricket", "medal", "championship", "FIFA", "ICC"],
+      "topics": [
+        {"name": "Major Tournaments", "keywords": ["Olympics", "Asian Games", "Commonwealth", "World Cup", "FIFA"]},
+        {"name": "Indian Sports Achievements", "keywords": ["medal", "gold", "world record", "champion", "Indian team"]}
+      ]
+    }
+  ]
+}
